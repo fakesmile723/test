@@ -9,7 +9,7 @@ class MyyCog(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def verify(ctx):
+    async def verify(self, ctx):
         button = Button(label="this is a test", style=discord.ButtonStyle.blurple)
         view = View()
         view.add_item(button)
