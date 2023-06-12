@@ -6,9 +6,9 @@ class MyyCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
-    async def madd(self, ctx, num1: int, num2: int):
-         await ctx.send(num1 + num2)
+    # @commands.command()
+    # async def madd(self, ctx, num1: int, num2: int):
+    #      await ctx.send(num1 + num2)
     # @commands.hybrid_command()
     # async def madd(self, ctx, num1: int, num2: int):
     #     await ctx.send(num1 + num2,  ephemeral=True)
