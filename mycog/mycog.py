@@ -12,7 +12,7 @@ class MyyCog(commands.Cog):
     # @commands.hybrid_command()
     # async def madd(self, ctx, num1: int, num2: int):
     #     await ctx.send(num1 + num2,  ephemeral=True)
-    @commands.command()
+    @commands.hybrid_command()
     async def madd(self, ctx, *nums: int):
         if len(nums) < 2:
             await ctx.send("Please specify at least two numbers to add.", ephemeral=True)
