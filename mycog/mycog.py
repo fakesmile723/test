@@ -23,4 +23,5 @@ class MyyCog(commands.Cog):
         button.callback = button_callback
         view = View()
         view.add_item(button)
+        view.add_item(button2)
         await ctx.send("The button below is a test which wont work" , view=view)
