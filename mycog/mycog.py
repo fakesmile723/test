@@ -10,8 +10,10 @@ class MyyCog(commands.Cog):
     # async def madd(self, ctx, num1: int, num2: int):
     #      await ctx.send(num1 + num2)
     @commands.hybrid_command()
-    async def madd(self, ctx, num1: int, num2: int):
-        await ctx.send(num1 + num2,  ephemeral=True)
+    async def madd(self, ctx, *nums: int):
+        result = sum(nums)
+        await ctx.send(f"The sum of {', '.join(map(str, nums))} is {result}.", ephemeral=True)
+
     # @commands.hybrid_command()
     # async def madd(self, ctx, *nums: int):
     #     if len(nums) < 2:
