@@ -7,7 +7,5 @@ class MyyCog(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def mycom(self, ctx):
-        """This does stuff!"""
-        # Your code will go here
-        await ctx.send("I can do stuff!")
+    async def madd(self, ctx, num1: int, num2: int):
+         await ctx.send(num1 + num2)
