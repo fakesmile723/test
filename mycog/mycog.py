@@ -11,9 +11,14 @@ class MyyCog(commands.Cog):
     @commands.command()
     async def verify(self, ctx):
         button = Button(label="this is a test", style=discord.ButtonStyle.blurple)
+        button2 = Button(label="this is a test2", style=discord.ButtonStyle.red)
 
         async def button_callback(interaction):
             await interaction.response.send_message("you clicked it!", ephemeral=True)
+        async def button2_callback(interaction):
+            await interaction.response.send_message("you clicked it again!", ephemeral=True)
+
+        button2.callback = button2_callback
 
         button.callback = button_callback
         view = View()
