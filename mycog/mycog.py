@@ -7,58 +7,54 @@ class MyyCog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.message = None
 
     @commands.command()
     async def verify(self, ctx):
-        embed=discord.Embed(title="Verification", description="**Read the rules and click on the button below that says Verify to gain access**", color=0x2b2d31)
+        embed = discord.Embed(title="Verification", description="**Read the rules and click on the button below that says Verify to gain access**", color=0x2b2d31)
         embed.set_image(url="https://media.tenor.com/yG0BZ-wew-sAAAAC/verify-discord.gif")
 
         vbutton = Button(label="Verify", style=discord.ButtonStyle.blurple, emoji="<:yess:1020703229891330099>")
-        # button2 = Button(label="this is a test2", style=discord.ButtonStyle.red)
 
         async def button_callback(interaction):
-            await interaction.response.send_message(embed = buttonembed , view=view2, ephemeral=True)
+            if self.message is None:
+                self.message = await interaction.response.send_message(embed=buttonembed, view=view2, ephemeral=True)
+            else:
+                await self.message.edit(embed=buttonembed, view=view2)
 
-
-        """this is where i write the verification code"""
-        button1= Button(emoji="👋🏻")
-        button2= Button(emoji="🔥")
-        button3= Button(emoji="🤩")
-        button4= Button(emoji="✅")
+        button1 = Button(emoji="👋🏻")
+        button2 = Button(emoji="🔥")
+        button3 = Button(emoji="🤩")
+        button4 = Button(emoji="✅")
 
         async def button1_callback(interaction):
-            await interaction.edit_original_response(content="this is button1")
-        async def button2_callback(interaction):
-            await interaction.edit_original_response(content="this is button2")
-        async def button3_callback(interaction):
-            await interaction.edit_original_response(content="this is button3")
-        async def button4_callback(interaction):
-            await interaction.edit_original_response(content="this is button4")
+            await interaction.response.edit_message(content="this is button1")
 
-        """defining button callback for all 4 buttons"""
+        async def button2_callback(interaction):
+            await interaction.response.edit_message(content="this is button2")
+
+        async def button3_callback(interaction):
+            await interaction.response.edit_message(content="this is button3")
+
+        async def button4_callback(interaction):
+            await interaction.response.edit_message(content="this is button4")
+
         button1.callback = button1_callback
         button2.callback = button2_callback
         button3.callback = button3_callback
         button4.callback = button4_callback
 
-        """Adding buttons to the view"""
-
-        view2=View()
+        view2 = View()
         view2.add_item(button1)
         view2.add_item(button2)
         view2.add_item(button3)
         view2.add_item(button4)
 
-
-        # async def button2_callback(interaction):
-        #     await interaction.response.send_message(embed = buttonembed, ephemeral=True)
-
         vbutton.callback = button_callback
-        # button2.callback = button2_callback
 
         buttonembed = discord.Embed(title="Verifying", description="You are about to verify yourself /n if you read the rules click on the right emote to get verified", color=0x2b2d31)
 
         view = View()
         view.add_item(vbutton)
-        # view.add_item(button2)
-        await ctx.send(embed = embed , view=view)
+
+        await ctx.send(embed=embed, view=view)
