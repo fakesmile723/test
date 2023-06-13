@@ -14,7 +14,6 @@ class MyyCog(commands.Cog):
         embed.set_image(url="https://media.tenor.com/yG0BZ-wew-sAAAAC/verify-discord.gif")
         embed.add_field(name="field", value="value", inline=False)
 
-        await ctx.send(embed=embed)
         button = Button(label="this is a test", style=discord.ButtonStyle.blurple)
         button2 = Button(label="this is a test2", style=discord.ButtonStyle.red)
 
