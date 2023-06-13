@@ -30,5 +30,3 @@ class MyyCog(commands.Cog):
         view.add_item(button)
         view.add_item(button2)
         await ctx.send(embed = embed , view=view)
-        await ctx.bot.remove_cog("MyyCog")
-        await ctx.bot.add_cog(MyyCog(ctx.bot))
