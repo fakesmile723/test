@@ -68,7 +68,7 @@ class MyyCog(commands.Cog):
 
             new_embed = None if view is None else view.embed  # Preserve the existing embed (if any)
 
-            await interaction.response.send_message(content=content, ephemeral=True, embed=new_embed, view=view)
+            await interaction.response.send_message(content=content, ephemeral=True)
 
 
 
