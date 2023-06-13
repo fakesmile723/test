@@ -67,7 +67,7 @@ class MyyCog(commands.Cog):
             await interaction.response.defer_update()  # Defer the initial interaction response
 
             if self.message is not None:
-                await self.message.edit(content=content, embed=None, view=None)
+                await interaction.response.edit_message(content=content, embed=None, view=None)
 
 
 
