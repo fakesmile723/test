@@ -31,22 +31,21 @@ class MyyCog(commands.Cog):
             await interaction.response.edit_message(content="this is button1", embed=None, view=None)
 
         async def button2_callback(interaction):
-            # await interaction.response.edit_message(content="this is button2", embed=None, view=None)
-            member = interaction.user  # Get the member who clicked the button
-            guild = interaction.guild  # Get the guild object
+            member = interaction.user
+            guild = interaction.guild
 
-            role_id = 1118228001415508031  # Replace with the actual ID of the role you want to add
+            role_id = 1118228001415508031
 
-            role = guild.get_role(role_id)  # Get the role object from the guild
+            role = guild.get_role(role_id)
 
             if role is not None:
                 if role in member.roles:
-                    await interaction.response.send_message("You are already verified!", ephemeral=True)
+                    await interaction.response.edit_message(content="You are already verified!", embed=None, view=None)
                 else:
                     await member.add_roles(role)
-                    await interaction.response.send_message("Role added successfully!", ephemeral=True)
+                    await interaction.response.edit_message(content="Role added successfully!", embed=None, view=None)
             else:
-                await interaction.response.send_message("Role not found. Please contact a server administrator.", ephemeral=True )
+                await interaction.response.edit_message(content="Role not found. Please contact a server administrator.", embed=None, view=None)
 
 
         async def button3_callback(interaction):
