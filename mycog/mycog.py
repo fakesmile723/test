@@ -20,7 +20,7 @@ class MyyCog(commands.Cog):
             if self.message is None:
                 self.message = await interaction.response.send_message(embed=buttonembed, view=view2, ephemeral=True)
             else:
-                await self.message.edit(embed=buttonembed, view=view2)
+                await self.message.edit()
 
         button1 = Button(emoji="👋🏻")
         button2 = Button(emoji="🔥")
