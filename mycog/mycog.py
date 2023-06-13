@@ -28,7 +28,7 @@ class MyyCog(commands.Cog):
 
         buttonembed = discord.Embed(title="click", description="this is a desp", color=0x2b2d31)
 
-        view = View()
+        view = View(timeout=None)
         view.add_item(button)
         view.add_item(button2)
         await ctx.send(embed = embed , view=view)
