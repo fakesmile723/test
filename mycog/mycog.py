@@ -20,7 +20,7 @@ class MyyCog(commands.Cog):
             if self.message is None:
                 self.message = await interaction.response.send_message(embed=buttonembed, view=view2, ephemeral=True)
             else:
-                await self.message.edit()
+                await interaction.response.defer_update()
 
         button1 = Button(emoji="👋🏻")
         button2 = Button(emoji="🔥")
@@ -28,16 +28,16 @@ class MyyCog(commands.Cog):
         button4 = Button(emoji="✅")
 
         async def button1_callback(interaction):
-            await interaction.response.edit_message(content="this is button1")
+            await interaction.response.edit_message(content="this is button1", view=None)
 
         async def button2_callback(interaction):
-            await interaction.response.edit_message(content="this is button2")
+            await interaction.response.edit_message(content="this is button2", view=None)
 
         async def button3_callback(interaction):
-            await interaction.response.edit_message(content="this is button3")
+            await interaction.response.edit_message(content="this is button3", view=None)
 
         async def button4_callback(interaction):
-            await interaction.response.edit_message(content="this is button4")
+            await interaction.response.edit_message(content="this is button4", view=None)
 
         button1.callback = button1_callback
         button2.callback = button2_callback
