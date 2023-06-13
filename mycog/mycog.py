@@ -27,13 +27,13 @@ class MyyCog(commands.Cog):
         button4= Button(emoji="✅")
 
         async def button1_callback(interaction):
-            await interaction.response.edit_message("this is button1")
+            await interaction.edit_original_response("this is button1")
         async def button2_callback(interaction):
-            await interaction.response.edit_message("this is button2")
+            await interaction.edit_original_response("this is button2")
         async def button3_callback(interaction):
-            await interaction.response.edit_message("this is button3")
+            await interaction.edit_original_response("this is button3")
         async def button4_callback(interaction):
-            await interaction.response.edit_message("this is button4")
+            await interaction.edit_original_response("this is button4")
 
         """defining button callback for all 4 buttons"""
         button1.callback = button1_callback
