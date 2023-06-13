@@ -20,11 +20,14 @@ class MyyCog(commands.Cog):
         async def button_callback(interaction):
             await interaction.response.send_message("you clicked it!", ephemeral=True)
         async def button2_callback(interaction):
-            await interaction.response.send_message("you clicked it again!", ephemeral=True)
+            await interaction.response.send_message(embed = buttonembed, ephemeral=True)
 
         button2.callback = button2_callback
 
         button.callback = button_callback
+
+        buttonembed = discord.Embed(title="click", description="this is a desp", color=0x2b2d31)
+
         view = View(timeout=180)
         view.add_item(button)
         view.add_item(button2)
