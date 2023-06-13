@@ -64,10 +64,12 @@ class MyyCog(commands.Cog):
             else:
                 content = "Role not found. Please contact a server administrator."
 
-            await interaction.response.defer_update()  # Defer the initial interaction response
+            view = interaction.message.view  # Get the view from the previous message
 
-            if self.message is not None:
-                await interaction.response.send_message(content=content, embed=None, view=None)
+            new_embed = None if view is None else view.embed  # Preserve the existing embed (if any)
+
+            await interaction.response.send_message(content=content, ephemeral=True, embed=new_embed, view=view)
+
 
 
 
