@@ -30,24 +30,8 @@ class MyyCog(commands.Cog):
         async def button1_callback(interaction):
             await interaction.response.edit_message(content="this is button1", embed=None, view=None)
 
-        # async def button2_callback(interaction):
-        #     # await interaction.response.edit_message(content="this is button2", embed=None, view=None)
-        #     member = interaction.user  # Get the member who clicked the button
-        #     guild = interaction.guild  # Get the guild object
-
-        #     role_id = 1118228001415508031  # Replace with the actual ID of the role you want to add
-
-        #     role = guild.get_role(role_id)  # Get the role object from the guild
-
-        #     if role is not None:
-        #         if role in member.roles:
-        #             await interaction.response.send_message("You are already verified!")
-        #         else:
-        #             await member.add_roles(role)
-        #             await interaction.response.send_message("Role added successfully!")
-        #     else:
-        #         await interaction.response.send_message("Role not found. Please contact a server administrator.")
         async def button2_callback(interaction):
+            # await interaction.response.edit_message(content="this is button2", embed=None, view=None)
             member = interaction.user  # Get the member who clicked the button
             guild = interaction.guild  # Get the guild object
 
@@ -57,20 +41,12 @@ class MyyCog(commands.Cog):
 
             if role is not None:
                 if role in member.roles:
-                    content = "You are already verified!"
+                    await interaction.response.send_message("You are already verified!", ephemeral=True)
                 else:
                     await member.add_roles(role)
-                    content = "Role added successfully!"
+                    await interaction.response.send_message("Role added successfully!", ephemeral=True)
             else:
-                content = "Role not found. Please contact a server administrator."
-
-            view = interaction.message.view  # Get the view from the previous message
-
-            new_embed = None if view is None else view.embed  # Preserve the existing embed (if any)
-
-            await interaction.response.send_message(content=content, ephemeral=True)
-
-
+                await interaction.response.send_message("Role not found. Please contact a server administrator.", ephemeral=True )
 
 
         async def button3_callback(interaction):
