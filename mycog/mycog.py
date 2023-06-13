@@ -64,8 +64,11 @@ class MyyCog(commands.Cog):
             else:
                 content = "Role not found. Please contact a server administrator."
 
+            await interaction.response.defer_update()  # Defer the initial interaction response
+
             if self.message is not None:
-                await interaction.response.edit_message(content=content, embed=None, view=None)
+                await self.message.edit(content=content, embed=None, view=None)
+
 
 
         async def button3_callback(interaction):
