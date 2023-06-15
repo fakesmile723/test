@@ -47,8 +47,9 @@ class MyyCog(commands.Cog):
     async def cog_load(self) -> None:
         self.bot.add_view(MyView())
 
-    # @commands.admin_or_permissions(administrator=True)
+    @commands.admin_or_permissions(administrator=True)
     @commands.command()
     async def verify(self, ctx: commands.Context):
         embed: discord.Embed = discord.Embed(title="Verification",description="**Read the rules and click on the button below that says Verify to gain access**",color=0x2b2d31)
         embed.set_image(url="https://media.tenor.com/yG0BZ-wew-sAAAAC/verify-discord.gif")
+        await ctx.send(embed=embed, view=MyView())
