@@ -35,7 +35,7 @@ class MyView(discord.ui.View):
         super().__init__(timeout=None)
     @discord.ui.button(
         label="Verify",
-        style=discord.ButtonStyle.sucess,
+        style=discord.ButtonStyle.green,
         emoji=discord.PartialEmoji(name="yess", id=1020703229891330099),
         custom_id="mycog_verify"
     )
