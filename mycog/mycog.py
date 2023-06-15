@@ -8,6 +8,8 @@ class MyyCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.load_message_id()
+    async def setup_hook(self) -> None:
+        self.add_view(MyyCog())
 
     def load_message_id(self):
         try:
@@ -32,7 +34,8 @@ class MyyCog(commands.Cog):
         vbutton = Button(
             label="Verify",
             style=discord.ButtonStyle.blurple,
-            emoji="<:yess:1020703229891330099>"
+            emoji="<:yess:1020703229891330099>",
+            custom_id="verify"
         )
 
         async def button_callback(interaction):
@@ -42,10 +45,10 @@ class MyyCog(commands.Cog):
                 self.save_message_id(message.id)
             else:
                 await interaction.response.edit_message(view=None)
-        button1 = Button(emoji="👋🏻")
-        button2 = Button(emoji="🔥")
-        button3 = Button(emoji="🤩")
-        button4 = Button(emoji="✅")        
+        button1 = Button(emoji="👋🏻", custom_id="1")
+        button2 = Button(emoji="🔥", custom_id="2")
+        button3 = Button(emoji="🤩", custom_id="3")
+        button4 = Button(emoji="✅", custom_id="4")        
 
         async def button1_callback(interaction):
             await interaction.response.edit_message(content="this is button1", embed=None, view=None)
