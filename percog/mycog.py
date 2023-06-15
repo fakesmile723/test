@@ -33,18 +33,9 @@ class ButtonsView(discord.ui.View):
 class MyView(discord.ui.View):
     def __init__(self) -> None:
         super().__init__(timeout=None)
-    @discord.ui.button(
-        label="Verify",
-        style=discord.ButtonStyle.green,
-        emoji=discord.PartialEmoji(name="yess", id=1020703229891330099),
-        custom_id="mycog_verify"
-    )
+    @discord.ui.button(label="Verify",style=discord.ButtonStyle.green,emoji="ℹ️",custom_id="mycog_verify")
     async def button_callback(self, interaction: discord.Interaction, item: discord.ui.Button):
-        button_embed: discord.Embed = discord.Embed(
-            title="Verifying",
-            description="You are about to verify yourself /n if you read the rules click on the right emote to get verified",
-            color=0x2b2d31
-        )
+        button_embed: discord.Embed = discord.Embed(title="Verifying",description="You are about to verify yourself /n if you read the rules click on the right emote to get verified",color=0x2b2d31)
         await interaction.response.send_message(embed=button_embed, view=ButtonsView(), ephemeral=True)
 
 class MyyCog(commands.Cog):
@@ -56,12 +47,8 @@ class MyyCog(commands.Cog):
     async def cog_load(self) -> None:
         self.bot.add_view(MyView())
 
-    @commands.admin_or_permissions(administrator=True)
+    # @commands.admin_or_permissions(administrator=True)
     @commands.command()
     async def verify(self, ctx: commands.Context):
-        embed: discord.Embed = discord.Embed(
-            title="Verification",
-            description="**Read the rules and click on the button below that says Verify to gain access**",
-            color=0x2b2d31
-        )
+        embed: discord.Embed = discord.Embed(title="Verification",description="**Read the rules and click on the button below that says Verify to gain access**",color=0x2b2d31)
         embed.set_image(url="https://media.tenor.com/yG0BZ-wew-sAAAAC/verify-discord.gif")
