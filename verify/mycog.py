@@ -7,7 +7,15 @@ class ButtonsView(discord.ui.View):
     def __init__(self, role: discord.Role) -> None:
         super().__init__(timeout=None)
         self.role = role
-        self.cooldown = commands.CooldownMapping.from_cooldown(1, 30 , commands.BucketType.member)
+        self.cooldowns = {}
+    def get_cooldown(self, member:discord.Member) -> int:
+        if member in self.cooldowns:
+            last_verified_time = self.cooldowns[member]
+            current_time = time.time()
+            remaining_cooldown = max(0, last_verified_time + 30 - current_time)
+            return remaining_cooldown
+        else:
+            return 0
 
     @discord.ui.button(emoji="👋🏻", custom_id="emote_1")
     async def button_1_callback(self, interaction: discord.Interaction, item: discord.ui.Button):
@@ -41,12 +49,11 @@ class MyView(discord.ui.View):
     @discord.ui.button(label="Verify",style=discord.ButtonStyle.green,emoji="<:yess:1020703229891330099>",custom_id="verify_button")
     async def button_callback(self, interaction: discord.Interaction, item: discord.ui.Button):
         button_embed: discord.Embed = discord.Embed(title="Verifying",description="You are about to verify yourself /n if you read the rules click on the right emote to get verified",color=0x2b2d31)
-        interaction.message.author = interaction.user
-        bucket = self.cooldown.get_bucket(interaction.message)
-        retry_after = bucket.update_rate_limit()
-        if retry:
-            return await interaction.response.send_message(f"Slow down! try again in {round(retry,1)} seconds.", ephemeral=True)
-        await interaction.response.send_message(embed=button_embed, view=ButtonsView(self.role), ephemeral=True)
+        remaining_cooldown = self.get_cooldown(member)
+        if remaining_cooldown > 0:
+            await interaction.response.send_message(content=f"You must wait {remaining_cooldown} more seconds before verifying again.", embed=None, view=None, ephemeral=None)
+        elif:
+            await interaction.response.send_message(embed=button_embed, view=ButtonsView(self.role), ephemeral=True)
 
 class MyyCog(commands.Cog):
     """My custom cog."""
