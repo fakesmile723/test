@@ -53,6 +53,7 @@ class MyView(discord.ui.View):
         if remaining_cooldown > 0:
             await interaction.response.send_message(content=f"You must wait {remaining_cooldown} more seconds before verifying again.", embed=None, view=None, ephemeral=None)
         else:
+            self.cooldowns[member] = time.time()
             await interaction.response.send_message(embed=button_embed, view=ButtonsView(self.role), ephemeral=True)
 
 class MyyCog(commands.Cog):
