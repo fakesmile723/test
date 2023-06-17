@@ -1,21 +1,11 @@
 from redbot.core import commands
 from redbot.core.bot import Red
 import discord
-import time
 
 class ButtonsView(discord.ui.View):
     def __init__(self, role: discord.Role) -> None:
-        super().__init__(timeout=None)
+        super().__init__()
         self.role = role
-        self.cooldowns = {}
-    def get_cooldown(self, member:discord.Member) -> int:
-        if member in self.cooldowns:
-            last_verified_time = self.cooldowns[member]
-            current_time = time.time()
-            remaining_cooldown = max(0, last_verified_time + 30 - current_time)
-            return remaining_cooldown
-        else:
-            return 0
 
     @discord.ui.button(emoji="👋🏻", custom_id="emote_1")
     async def button_1_callback(self, interaction: discord.Interaction, item: discord.ui.Button):
@@ -46,15 +36,10 @@ class MyView(discord.ui.View):
         self.channel = channel
         self.role = role
 
-    @discord.ui.button(label="Verify",style=discord.ButtonStyle.green,emoji="<:yess:1020703229891330099>",custom_id="verify_button")
+    @discord.ui.button(label="Verify",style=discord.ButtonStyle.green,emoji="<:yess:1020703229891330099>",custom_id="verify")
     async def button_callback(self, interaction: discord.Interaction, item: discord.ui.Button):
-        button_embed: discord.Embed = discord.Embed(title="Verifying",description="You are about to verify yourself /n if you read the rules click on the right emote to get verified",color=0x2b2d31)
-        remaining_cooldown = self.get_cooldown(member)
-        if remaining_cooldown > 0:
-            await interaction.response.send_message(content=f"You must wait {remaining_cooldown} more seconds before verifying again.", embed=None, view=None, ephemeral=None)
-        else:
-            self.cooldowns[member] = time.time()
-            await interaction.response.send_message(embed=button_embed, view=ButtonsView(self.role), ephemeral=True)
+        button_embed: discord.Embed = discord.Embed(title="Verifying . . . ",description="You are about to verify yourself if you read the rules click on the right emote to get verified",color=0x2b2d31)
+        await interaction.response.send_message(embed=button_embed, view=ButtonsView(self.role), ephemeral=True)
 
 class MyyCog(commands.Cog):
     """My custom cog."""
@@ -66,7 +51,7 @@ class MyyCog(commands.Cog):
         pass
 
     @commands.admin_or_permissions(administrator=True)
-    @commands.command()
+    @commands.hybrid_command()
     async def verify(self, ctx: commands.Context, channel: discord.TextChannel, role: discord.Role):
         embed: discord.Embed = discord.Embed(title="Verification",description="**Read the rules and click on the button below that says Verify to gain access**",color=0x2b2d31)
         embed.set_image(url="https://media.tenor.com/yG0BZ-wew-sAAAAC/verify-discord.gif")
