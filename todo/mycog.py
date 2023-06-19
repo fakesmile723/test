@@ -140,7 +140,7 @@ class TaskView(View):
                 await interaction.response.edit_message(content=f"Task '{self.task}' deleted from the list.", view=None)
                 class EditView(View):
                     def init(self, task):
-                    super().init()
+                    super().__init__()
                     self.task = task
                     self.add_item(Button(style=discord.ButtonStyle.green, label="Mark as Done", custom_id="done"))
                     self.add_item(Button(style=discord.ButtonStyle.gray, label="Edit", custom_id="edit"))
