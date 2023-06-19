@@ -1,0 +1,22 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Cog-Creators/Red-DiscordBot/V3/develop/schema/red_cog.schema.json",
+    "author": [
+        "Fake_smile (Fake_Smile#0001)"
+    ],
+    "description": "A simple todo cog that i made with the help of Red community",
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users.",
+    "install_msg": "Thanks for installing! to know all the commands of the todo cog do `[p]help Todo.",
+    "min_bot_version": "3.5.0",
+    "min_python_version": [
+        3,
+        8,
+        1
+    ],
+    "name": "Todo",
+    "short": "Just a normal todo system",
+    "tags": [
+        "utility",
+        "Verify",
+        "server utils"
+    ]
+}
