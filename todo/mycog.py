@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from discord.ui import Select, SelectOption, Button, View
+from discord.ui import Select,  Button, View
 
 import pymongo
 
