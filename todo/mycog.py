@@ -65,7 +65,7 @@ class Todo(commands.Cog):
 class TodoView(View):
     def __init__(self, tasks):
         super().__init__()
-        options = [SelectOption(label=task, value=task) for task in tasks]
+        options = [{"label": task, "value": task} for task in tasks]
         self.add_item(Select(options=options, placeholder="Select a task to manage", min_values=1, max_values=1))
         self.add_item(Button(style=discord.ButtonStyle.red, label="Delete All", custom_id="delete_all"))
 
