@@ -31,8 +31,9 @@ class Unsplash(commands.Cog):
             if results:
                 image = random.choice(results)
                 image_url = image["urls"]["regular"]
+                image_description = image["description"]
 
-                embed = discord.Embed(title=query, color=0x2b2d31, description="Here is the image you requested {query}.")
+                embed = discord.Embed(title=query, color=0x2b2d31, description=f"**Query**: {query}\n**Description**: {image_description}")
                 embed.set_image(url=image_url)
 
                 await ctx.send(embed=embed)
