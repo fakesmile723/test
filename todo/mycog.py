@@ -103,41 +103,33 @@ class TaskView(View):
         self.add_item(Button(style=discord.ButtonStyle.gray, label="Edit", custom_id="edit"))
         self.add_item(Button(style=discord.ButtonStyle.red, label="Delete", custom_id="delete"))
 
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.message.author:
-            await interaction.response.send_message("You cannot interact with this message.", ephemeral=True)
-            return False
-        return True
+    @View.select(0)
+    async def task_select(self, select_menu, selected_option):
+        task = selected_option.value
+        view = TaskView(task)
+        await select_menu.response.edit_message(view=view)
 
-    async def update_task(self, status=None, new_task=None):
-        update_query = {}
-        if status is not None:
-            update_query.update({"status": status})
-        if new_task is not None:
-            update_query.update({"task": new_task})
-            self.collection.update_one({"task": self.task}, {"$set": update_query})
+    @View.button(0)
+    async def done(self, button: discord.ui.Button, interaction: discord.Interaction):
+        await self.update_task(status="done")
+        await interaction.response.edit_message(content=f"Task '{self.task}' marked as 'done'.", view=None)
 
-            @View.button(0)
-            async def done(self, button: discord.ui.Button, interaction: discord.Interaction):
-                await self.update_task(status="done")
-                await interaction.response.edit_message(content=f"Task '{self.task}' marked as 'done'.", view=None)
+    @View.button(1)
+    async def edit(self, button: discord.ui.Button, interaction: discord.Interaction):
+        await interaction.response.edit_message(content=f"Please enter the new task for '{self.task}'.")
+        try:
+            reply = await self.bot.wait_for("message", check=lambda m: m.author == interaction.user, timeout=30.0)
+        except asyncio.TimeoutError:
+            await interaction.followup.send("No response received. Task not updated.")
+            return
+        new_task = reply.content
+        self.update_task(new_task=new_task)
+        await interaction.followup.send(f"Task '{self.task}' updated to '{new_task}'.", view=None)
 
-            @View.button(1)
-            async def edit(self, button: discord.ui.Button, interaction: discord.Interaction):
-                await interaction.response.edit_message(content=f"Please enter the new task for '{self.task}'.")
-                try:
-                    reply = await self.bot.wait_for("message", check=lambda m: m.author == interaction.user, timeout=30.0)
-                except asyncio.TimeoutError:
-                    await interaction.followup.send("No response received. Task not updated.")
-                    return
-                new_task = reply.content
-                self.update_task(new_task=new_task)
-                await interaction.followup.send(f"Task '{self.task}' updated to '{new_task}'.", view=None)
-
-            @View.button(2)
-            async def delete(self, button: discord.ui.Button, interaction: discord.Interaction):
-                self.collection.delete_one({"task": self.task})
-                await interaction.response.edit_message(content=f"Task '{self.task}' deleted from the list.", view=None)
+    @View.button(2)
+    async def delete(self, button: discord.ui.Button, interaction: discord.Interaction):
+        self.collection.delete_one({"task": self.task})
+        await interaction.response.edit_message(content=f"Task '{self.task}' deleted from the list.", view=None)
 class EditView(View):
     def init(self, task):
         super().__init__()
