@@ -137,31 +137,31 @@ class TaskView(View):
             self.collection.delete_one({"task": self.task})
             await interaction.response.edit_message(content=f"Task '{self.task}' deleted from the list.", view=None)
             lass EditView(View):
-    def init(self, task):
-        super().init()
-        self.task = task
-        self.add_item(Button(style=discord.ButtonStyle.green, label="Mark as Done", custom_id="done"))
-        self.add_item(Button(style=discord.ButtonStyle.gray, label="Edit", custom_id="edit"))
-        self.add_item(Button(style=discord.ButtonStyle.red, label="Delete", custom_id="delete"))
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user != self.message.author:
-            await interaction.response.send_message("You cannot interact with this message.", ephemeral=True)
-            return False
-            return True
+            def init(self, task):
+                super().init()
+                self.task = task
+                self.add_item(Button(style=discord.ButtonStyle.green, label="Mark as Done", custom_id="done"))
+                self.add_item(Button(style=discord.ButtonStyle.gray, label="Edit", custom_id="edit"))
+                self.add_item(Button(style=discord.ButtonStyle.red, label="Delete", custom_id="delete"))
+            async def interaction_check(self, interaction: discord.Interaction) -> bool:
+                if interaction.user != self.message.author:
+                    await interaction.response.send_message("You cannot interact with this message.", ephemeral=True)
+                    return False
+                    return True
 
-        @View.button(0)
-        async def done(self, button: discord.ui.Button, interaction: discord.Interaction):
-            await self.bot.get_cog("Todo").done.invoke(interaction.message.channel, task=self.task)
-            await interaction.response.edit_message(view=None)
+                @View.button(0)
+                async def done(self, button: discord.ui.Button, interaction: discord.Interaction):
+                    await self.bot.get_cog("Todo").done.invoke(interaction.message.channel, task=self.task)
+                    await interaction.response.edit_message(view=None)
 
-        @View.button(1)
-        async def edit(self, button: discord.ui.Button, interaction: discord.Interaction):
-            await self.bot.get_cog("Todo").edit.invoke(interaction.message.channel, task=self.task)
-            await interaction.response.edit_message(view=None)
+                @View.button(1)
+                async def edit(self, button: discord.ui.Button, interaction: discord.Interaction):
+                    await self.bot.get_cog("Todo").edit.invoke(interaction.message.channel, task=self.task)
+                    await interaction.response.edit_message(view=None)
 
-        @View.button(2)
-        async def delete(self, button: discord.ui.Button, interaction: discord.Interaction):
-            await self.bot.get_cog("Todo").delete.invoke(interaction.message.channel, task=self.task)
-            await interaction.response.edit_message(view=None)
+                @View.button(2)
+                async def delete(self, button: discord.ui.Button, interaction: discord.Interaction):
+                    await self.bot.get_cog("Todo").delete.invoke(interaction.message.channel, task=self.task)
+                    await interaction.response.edit_message(view=None)
         def setup(bot):
             bot.add_cog(Todo(bot))
