@@ -61,6 +61,7 @@ class Todo(commands.Cog):
         else:
             await ctx.send("No tasks found in the list.")
 
+
 class TodoView(View):
     def __init__(self, tasks):
         super().__init__()
@@ -93,6 +94,7 @@ class TodoView(View):
         await self.delete_all_tasks()
         await interaction.response.edit_message(content="All tasks deleted from the list.", view=None)
 
+
 class TaskView(View):
     def __init__(self, task):
         super().__init__()
@@ -115,53 +117,53 @@ class TaskView(View):
             update_query.update({"task": new_task})
             self.collection.update_one({"task": self.task}, {"$set": update_query})
 
-    @View.button(0)
-    async def done(self, button: discord.ui.Button, interaction: discord.Interaction):
-        await self.update_task(status="done")
-        await interaction.response.edit_message(content=f"Task '{self.task}' marked as 'done'.", view=None)
+            @View.button(0)
+            async def done(self, button: discord.ui.Button, interaction: discord.Interaction):
+                await self.update_task(status="done")
+                await interaction.response.edit_message(content=f"Task '{self.task}' marked as 'done'.", view=None)
 
-    @View.button(1)
-    async def edit(self, button: discord.ui.Button, interaction: discord.Interaction):
-        await interaction.response.edit_message(content=f"Please enter the new task for '{self.task}'.")
-        try:
-            reply = await self.bot.wait_for("message", check=lambda m: m.author == interaction.user, timeout=30.0)
-        except asyncio.TimeoutError:
-            await interaction.followup.send("No response received. Task not updated.")
-            return
-        new_task = reply.content
-        self.update_task(new_task=new_task)
-        await interaction.followup.send(f"Task '{self.task}' updated to '{new_task}'.", view=None)
+            @View.button(1)
+            async def edit(self, button: discord.ui.Button, interaction: discord.Interaction):
+                await interaction.response.edit_message(content=f"Please enter the new task for '{self.task}'.")
+                try:
+                    reply = await self.bot.wait_for("message", check=lambda m: m.author == interaction.user, timeout=30.0)
+                except asyncio.TimeoutError:
+                    await interaction.followup.send("No response received. Task not updated.")
+                    return
+                new_task = reply.content
+                self.update_task(new_task=new_task)
+                await interaction.followup.send(f"Task '{self.task}' updated to '{new_task}'.", view=None)
 
-        @View.button(2)
-        async def delete(self, button: discord.ui.Button, interaction: discord.Interaction):
-            self.collection.delete_one({"task": self.task})
-            await interaction.response.edit_message(content=f"Task '{self.task}' deleted from the list.", view=None)
-            lass EditView(View):
-            def init(self, task):
-                super().init()
-                self.task = task
-                self.add_item(Button(style=discord.ButtonStyle.green, label="Mark as Done", custom_id="done"))
-                self.add_item(Button(style=discord.ButtonStyle.gray, label="Edit", custom_id="edit"))
-                self.add_item(Button(style=discord.ButtonStyle.red, label="Delete", custom_id="delete"))
-            async def interaction_check(self, interaction: discord.Interaction) -> bool:
-                if interaction.user != self.message.author:
-                    await interaction.response.send_message("You cannot interact with this message.", ephemeral=True)
-                    return False
-                    return True
+            @View.button(2)
+            async def delete(self, button: discord.ui.Button, interaction: discord.Interaction):
+                self.collection.delete_one({"task": self.task})
+                await interaction.response.edit_message(content=f"Task '{self.task}' deleted from the list.", view=None)
+                class EditView(View):
+                    def init(self, task):
+                    super().init()
+                    self.task = task
+                    self.add_item(Button(style=discord.ButtonStyle.green, label="Mark as Done", custom_id="done"))
+                    self.add_item(Button(style=discord.ButtonStyle.gray, label="Edit", custom_id="edit"))
+                    self.add_item(Button(style=discord.ButtonStyle.red, label="Delete", custom_id="delete"))
+                    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+                        if interaction.user != self.message.author:
+                            await interaction.response.send_message("You cannot interact with this message.", ephemeral=True)
+                            return False
+                        return True
 
-                @View.button(0)
-                async def done(self, button: discord.ui.Button, interaction: discord.Interaction):
-                    await self.bot.get_cog("Todo").done.invoke(interaction.message.channel, task=self.task)
-                    await interaction.response.edit_message(view=None)
+                    @View.button(0)
+                    async def done(self, button: discord.ui.Button, interaction: discord.Interaction):
+                        await self.bot.get_cog("Todo").done.invoke(interaction.message.channel, task=self.task)
+                        await interaction.response.edit_message(view=None)
 
-                @View.button(1)
-                async def edit(self, button: discord.ui.Button, interaction: discord.Interaction):
-                    await self.bot.get_cog("Todo").edit.invoke(interaction.message.channel, task=self.task)
-                    await interaction.response.edit_message(view=None)
+                    @View.button(1)
+                    async def edit(self, button: discord.ui.Button, interaction: discord.Interaction):
+                        await self.bot.get_cog("Todo").edit.invoke(interaction.message.channel, task=self.task)
+                        await interaction.response.edit_message(view=None)
 
-                @View.button(2)
-                async def delete(self, button: discord.ui.Button, interaction: discord.Interaction):
-                    await self.bot.get_cog("Todo").delete.invoke(interaction.message.channel, task=self.task)
-                    await interaction.response.edit_message(view=None)
-        def setup(bot):
-            bot.add_cog(Todo(bot))
+                    @View.button(2)
+                    async def delete(self, button: discord.ui.Button, interaction: discord.Interaction):
+                        await self.bot.get_cog("Todo").delete.invoke(interaction.message.channel, task=self.task)
+                        await interaction.response.edit_message(view=None)
+                    def setup(bot):
+                        bot.add_cog(Todo(bot))
