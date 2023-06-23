@@ -1,4 +1,4 @@
-from bardapi import Bard
+from bardapi import Bard , ChatBard
 from redbot.core import commands
 import os
 import discord
@@ -11,7 +11,7 @@ class BAIChat(commands.Cog):
         self.use_images = False
         self.allow_dm = True
         self.active_channels = set()
-        self.bard = Bard("xxxxxx")
+        self.bard = ChatBard("xxxxxx")
         self.message_id = ""
         self.images = []
 
