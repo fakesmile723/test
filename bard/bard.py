@@ -1,5 +1,6 @@
-from bardapi import Bard , Chatbot
+from bardapi import Bard
 from redbot.core import commands
+from Bard import Chatbot
 import os
 import discord
 
