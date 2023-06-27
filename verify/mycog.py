@@ -7,11 +7,11 @@ class ButtonsView(discord.ui.View):
         super().__init__()
         self.role = role
 
-    @discord.ui.button(emoji="👋🏻", custom_id="emote_1")
+    @discord.ui.button(lable="S2020" , custom_id="emote_1")
     async def button_1_callback(self, interaction: discord.Interaction, item: discord.ui.Button):
         await interaction.response.edit_message(content="Wrong emote try again!", embed=None, view=None)
 
-    @discord.ui.button(emoji="🔥", custom_id="emote_2")
+    @discord.ui.button(lable="SSS2020" , custom_id="emote_2")
     async def button_2_callback(self, interaction: discord.Interaction, item: discord.ui.Button):
         member = interaction.user
         guild = interaction.guild
@@ -22,13 +22,13 @@ class ButtonsView(discord.ui.View):
             await member.add_roles(self.role)
             await interaction.response.edit_message(content="You are verifed successfully!", embed=None, view=None)
 
-    @discord.ui.button(emoji="🤩", custom_id="emote_3")
+    @discord.ui.button(lable="SS2020" , custom_id="emote_3")
     async def button_3_callback(self, interaction: discord.Interaction, item: discord.ui.Button):
-        await interaction.response.edit_message(content="Wrong emote try again!", embed=None, view=None)
+        await interaction.response.edit_message(content="Wrong answer try again!", embed=None, view=None)
 
-    @discord.ui.button(emoji="✅", custom_id="emote_4")
+    @discord.ui.button(lable="2020SSS", custom_id="emote_4")
     async def button_4_callback(self, interaction: discord.Interaction, item: discord.ui.Button):
-        await interaction.response.edit_message(content="Wrong emote try again!", embed=None, view=None)
+        await interaction.response.edit_message(content="Wrong answer try again!", embed=None, view=None)
 
 class MyView(discord.ui.View):
     def __init__(self, channel: discord.TextChannel, role: discord.Role) -> None:
