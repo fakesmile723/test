@@ -9,7 +9,7 @@ class ButtonsView(discord.ui.View):
 
     @discord.ui.button(label="S2020" , custom_id="emote_1")
     async def button_1_callback(self, interaction: discord.Interaction, item: discord.ui.Button):
-        await interaction.response.edit_message(content="Wrong emote try again!", embed=None, view=None)
+        await interaction.response.edit_message(content="Wrong answer try again!", embed=None, view=None)
 
     @discord.ui.button(label="SSS2020" , custom_id="emote_2")
     async def button_2_callback(self, interaction: discord.Interaction, item: discord.ui.Button):
