@@ -5,7 +5,7 @@ from redbot.core.config import Config
 import discord
 
 class Counting(commands.Cog):
-    """Cog for a counting game with leaderboards, custom reactions, per-guild configuration, and shame role."""
+    """Cog for a counting game with leaderboards, custom reactions, per-guild configuration, and optional shame role."""
 
     default_guild = {
         "current_number": 0,
@@ -23,14 +23,29 @@ class Counting(commands.Cog):
         self.config.register_guild(**self.default_guild)
 
     @commands.command()
-    async def startcounting(self, ctx, channel: discord.TextChannel, shame_role: discord.Role):
-        """Starts the counting game in the specified channel with the given shame role."""
+    async def countingsetchannel(self, ctx, channel: discord.TextChannel = None):
+        """Sets the channel for the counting game. If no channel is provided, a new one is created."""
+        guild = ctx.guild
+
+        if channel is None:
+            # Create a new channel if none is provided
+            channel = await guild.create_text_channel(name="counting-game")
+            await ctx.send(f"Counting game channel created: {channel.mention}. Please set the shame role (optional) using `countingsetshamerole`.")
+        else:
+            # Use the provided channel
+            await ctx.send(f"Counting game channel set to {channel.mention}. Please set the shame role (optional) using `countingsetshamerole`.")
+
+        # Update the channel ID in the config and reset game variables
         await self.config.guild(ctx.guild).channel_id.set(channel.id)
         await self.config.guild(ctx.guild).current_number.set(1)
         await self.config.guild(ctx.guild).leaderboard.set({})
+        await self.config.guild(ctx.guild).last_counter_id.set(None)
+
+    @commands.command()
+    async def countingsetshamerole(self, ctx, shame_role: discord.Role):
+        """Sets the shame role for incorrect counting (optional)."""
         await self.config.guild(ctx.guild).shame_role.set(shame_role.id)
-        await self.config.guild(ctx.guild).last_counter_id.set(None)  # Reset last counter
-        await channel.send("Counting game started! Next number: 1")
+        await ctx.send(f"Shame role for counting set to {shame_role.mention}")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -55,20 +70,26 @@ class Counting(commands.Cog):
                 else:
                     await message.add_reaction(guild_config["wrong_emote"])
 
-                    # Reset count and give shame role
-                    shame_role = message.guild.get_role(guild_config["shame_role"])
-                    await message.author.add_roles(shame_role, reason="Wrong count or double counting")
+                    # If shame role is set, apply logic, otherwise just reset the count
+                    if guild_config["shame_role"]:
+                        shame_role = message.guild.get_role(guild_config["shame_role"])
+                        await message.author.add_roles(shame_role, reason="Wrong count or double counting")
+                        await message.channel.set_permissions(shame_role, send_messages=False)
+
+                        # Send roasting message (personalized & math-themed)
+                        display_name = message.author.display_name
+                        roasts = [
+                            f"{display_name} couldn't even count to {guild_config['current_number'] + 1}! Maybe try using your fingers next time?",
+                            f"Looks like {display_name} skipped a few math classes... Back to square one!",
+                            f"{display_name}, is that your final answer? Because it's definitely wrong!",
+                            f"{display_name}'s counting skills are as impressive as their ability to divide by zero.",
+                            f"{display_name}, are you sure you're not a calculator in disguise? Because your math is off!",
+                        ]
+                        roast = random.choice(roasts)
+                        await message.channel.send(embed=discord.Embed(description=roast, color=discord.Color.red()))
+
                     await self.config.guild(message.guild).current_number.set(1)
                     await self.config.guild(message.guild).last_counter_id.set(None)
-
-                    # Send roasting message
-                    roasts = [
-                        f"{message.author.name} can't count! Back to the start we go!",
-                        f"{message.author.name} tried to cheat! Shame on you!",
-                        f"{message.author.name} is bad at math! Let's start over.",
-                    ]
-                    roast = random.choice(roasts)
-                    await message.channel.send(embed=discord.Embed(description=roast, color=discord.Color.red()))
 
             except ValueError:
                 pass  # Ignore non-numeric messages
@@ -79,25 +100,8 @@ class Counting(commands.Cog):
         current_number = await self.config.guild(ctx.guild).current_number()
         await ctx.send(f"The current number is: {current_number}")
 
-    @commands.group()
-    async def countingset(self, ctx):
-        """Configuration commands for the counting game."""
-        pass  # Placeholder for subcommands
-
-    @countingset.command(name="correctemote")
-    async def set_correct_emote(self, ctx, emote: discord.Emoji):
-        """Sets the emote to use for correct guesses."""
-        await self.config.guild(ctx.guild).correct_emote.set(str(emote))
-        await ctx.send(f"Correct guess emote set to: {emote}")
-
-    @countingset.command(name="wrongemote")
-    async def set_wrong_emote(self, ctx, emote: discord.Emoji):
-        """Sets the emote to use for wrong guesses."""
-        await self.config.guild(ctx.guild).wrong_emote.set(str(emote))
-        await ctx.send(f"Wrong guess emote set to: {emote}")
-
-    @countingset.command(name="leaderboard")
-    async def view_leaderboard(self, ctx):
+    @commands.command(aliases=["countingboard", "countingleaderboard"])
+    async def countinglb(self, ctx):
         """Displays the leaderboard in an embed."""
         leaderboard = await self.config.guild(ctx.guild).leaderboard()
         if leaderboard:
