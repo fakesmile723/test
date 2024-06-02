@@ -28,14 +28,11 @@ class Counting(commands.Cog):
         guild = ctx.guild
 
         if channel is None:
-            # Create a new channel if none is provided
             channel = await guild.create_text_channel(name="counting-game")
             await ctx.send(f"Counting game channel created: {channel.mention}. Please set the shame role (optional) using `countingsetshamerole`.")
         else:
-            # Use the provided channel
             await ctx.send(f"Counting game channel set to {channel.mention}. Please set the shame role (optional) using `countingsetshamerole`.")
 
-        # Update the channel ID in the config and reset game variables
         await self.config.guild(ctx.guild).channel_id.set(channel.id)
         await self.config.guild(ctx.guild).current_number.set(1)
         await self.config.guild(ctx.guild).leaderboard.set({})
@@ -70,13 +67,11 @@ class Counting(commands.Cog):
                 else:
                     await message.add_reaction(guild_config["wrong_emote"])
 
-                    # If shame role is set, apply logic, otherwise just reset the count
                     if guild_config["shame_role"]:
                         shame_role = message.guild.get_role(guild_config["shame_role"])
                         await message.author.add_roles(shame_role, reason="Wrong count or double counting")
                         await message.channel.set_permissions(shame_role, send_messages=False)
 
-                        # Send roasting message (personalized & math-themed)
                         display_name = message.author.display_name
                         roasts = [
                             f"{display_name} couldn't even count to {guild_config['current_number'] + 1}! Maybe try using your fingers next time?",
