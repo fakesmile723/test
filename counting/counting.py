@@ -14,7 +14,8 @@ class Counting(commands.Cog):
         "correct_emote": "✅",
         "wrong_emote": "❌",
         "shame_role": None,
-        "last_counter_id": None
+        "last_counter_id": None,
+        "roast_msg": None,
     }
 
     def __init__(self, bot: Red):
@@ -34,9 +35,7 @@ class Counting(commands.Cog):
             await ctx.send(f"Counting game channel set to {channel.mention}. Please set the shame role (optional) using `countingsetshamerole`.")
 
         await self.config.guild(ctx.guild).channel_id.set(channel.id)
-        await self.config.guild(ctx.guild).current_number.set(1)
-        await self.config.guild(ctx.guild).leaderboard.set({})
-        await self.config.guild(ctx.guild).last_counter_id.set(None)
+        await self.reset_game(ctx.guild, channel)
 
     @commands.command()
     async def countingsetshamerole(self, ctx, shame_role: discord.Role):
@@ -67,11 +66,13 @@ class Counting(commands.Cog):
                 else:
                     await message.add_reaction(guild_config["wrong_emote"])
 
+                    # If shame role is set, apply logic, otherwise just reset the count
                     if guild_config["shame_role"]:
                         shame_role = message.guild.get_role(guild_config["shame_role"])
                         await message.author.add_roles(shame_role, reason="Wrong count or double counting")
                         await message.channel.set_permissions(shame_role, send_messages=False)
 
+                        # Send roasting message with embed and GIF
                         display_name = message.author.display_name
                         roasts = [
                             f"{display_name} couldn't even count to {guild_config['current_number'] + 1}! Maybe try using your fingers next time?",
@@ -81,13 +82,31 @@ class Counting(commands.Cog):
                             f"{display_name}, are you sure you're not a calculator in disguise? Because your math is off!",
                         ]
                         roast = random.choice(roasts)
-                        await message.channel.send(embed=discord.Embed(description=roast, color=discord.Color.red()))
+                        embed = discord.Embed(description=roast, color=discord.Color.red())
+                        embed.set_image(url="https://media.tenor.com/4BRzlmo2FroAAAAC/kendeshi-anime-smh.gif")
+                        roast_msg = await message.channel.send(embed=embed)
+                        await self.config.guild(message.guild).roast_msg.set(roast_msg.id)
 
                     await self.config.guild(message.guild).current_number.set(1)
                     await self.config.guild(message.guild).last_counter_id.set(None)
 
             except ValueError:
                 pass  # Ignore non-numeric messages
+
+    async def reset_game(self, guild, channel):
+        """Resets the game and deletes the previous roast message."""
+        await self.config.guild(guild).current_number.set(1)
+        await self.config.guild(guild).leaderboard.set({})
+        await self.config.guild(guild).last_counter_id.set(None)
+
+        try:
+            roast_msg_id = await self.config.guild(guild).roast_msg()
+            if roast_msg_id:
+                roast_msg = await channel.fetch_message(roast_msg_id)
+                await roast_msg.delete()
+                await self.config.guild(guild).roast_msg.set(None)
+        except discord.NotFound:
+            pass
 
     @commands.command()
     async def currentnumber(self, ctx):
