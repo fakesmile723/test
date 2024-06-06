@@ -50,12 +50,22 @@ class Counting(commands.Cog):
             return
 
         guild_config = await self.config.guild(message.guild).all()
-        if guild_config["channel_id"] == message.channel.id:
+
+        # Check if channel_id is set before proceeding
+        if guild_config["channel_id"] is not None and guild_config["channel_id"] == message.channel.id: 
+
             try:
                 next_number = int(message.content)
                 last_counter_id = await self.config.guild(message.guild).last_counter_id()
                 if next_number == guild_config["current_number"] + 1 and message.author.id != last_counter_id:
-                    # ... (correct guess logic remains the same)
+                    await self.config.guild(message.guild).current_number.set(next_number)
+                    await self.config.guild(message.guild).last_counter_id.set(message.author.id)
+                    await message.add_reaction(guild_config["correct_emote"])
+
+                    leaderboard = guild_config["leaderboard"]
+                    user_id = str(message.author.id)
+                    leaderboard[user_id] = leaderboard.get(user_id, 0) + 1
+                    await self.config.guild(message.guild).leaderboard.set(leaderboard)
                 else:
                     await message.add_reaction(guild_config["wrong_emote"])
 
@@ -66,7 +76,7 @@ class Counting(commands.Cog):
                             roast_msg = await message.channel.fetch_message(roast_msg_id)
                             await roast_msg.delete()
                         except discord.NotFound:
-                            pass
+                            pass  
 
                     if guild_config["shame_role"]:
                         # Remove shame role from the previous counter
@@ -74,12 +84,12 @@ class Counting(commands.Cog):
                             last_counter = message.guild.get_member(last_counter_id)
                             if last_counter:
                                 await last_counter.remove_roles(
-                                    message.guild.get_role(guild_config["shame_role"]),
+                                    message.guild.get_role(guild_config["shame_role"]), 
                                     reason="Previous counter made a correct guess"
                                 )
                                 # Restore permission to send messages in counting channel
                                 await message.channel.set_permissions(last_counter, send_messages=True)
-
+                        
                         # Give shame role to the current counter
                         shame_role = message.guild.get_role(guild_config["shame_role"])
                         await message.author.add_roles(shame_role, reason="Wrong count or double counting")
@@ -102,7 +112,7 @@ class Counting(commands.Cog):
 
                     await self.config.guild(message.guild).current_number.set(1)
                     await self.config.guild(message.guild).last_counter_id.set(None)
-
+ 
             except ValueError:
                 pass  # Ignore non-numeric messages
 
